@@ -6,8 +6,8 @@ shell: bash
 env:
   exportedVariables:
     - BUILDRUN_HASH
-  vaultVariables:
-    OCIRCRED: "ocid1.vaultsecret.oc1.uk-london-1.amaaaaaay5l3z3ya74cfujmsgyeqpyyojowtsoiaqrniuvjxx67hw2cu43sa"
+  # vaultVariables:
+  #   OCIRCRED: "ocid1.vaultsecret.oc1.uk-london-1.amaaaaaay5l3z3ya74cfujmsgyeqpyyojowtsoiaqrniuvjxx67hw2cu43sa"
 
 steps:
   - type: Command
@@ -66,7 +66,7 @@ steps:
     name: "Push Docker Image to OCIR"
     command: |
       echo "Login to OCIR"
-      docker login syd.ocir.io -u apaccpt01/oracleidentitycloudservice/howie.owi@oracle.com -p ${OCIRCRED}
+      docker login syd.ocir.io -u apaccpt01/oracleidentitycloudservice/howie.owi@oracle.com -p "<zxG6}yd1ZP9:bqm48Fk"
       echo "Push image to OCIR"
       docker push syd.ocir.io/apaccpt01/dotnet-webapp-repo:${BUILDRUN_HASH}
     onFailure:
