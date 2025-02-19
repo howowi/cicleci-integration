@@ -1,6 +1,6 @@
 version: 1.0
 component: deployment
-runAs: opc
+runAs: root
 env:
   variables:
     version: ${BUILDRUN_HASH}
@@ -19,11 +19,6 @@ steps:
   - stepType: Command
     name: login to OCI Container Registry
     command:  docker login syd.ocir.io -u apaccpt01/oracleidentitycloudservice/howie.owi@oracle.com -p "<zxG6}yd1ZP9:bqm48Fk"
-    timeoutInSeconds: 60
-
-  - stepType: Command
-    name: pull the latest image
-    command: syd.ocir.io/apaccpt01/dotnet-webapp-repo:${version}
     timeoutInSeconds: 60
 
   - stepType: Command
