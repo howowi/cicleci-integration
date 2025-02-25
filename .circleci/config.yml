@@ -7,12 +7,12 @@ executors:
   oci-executor:
     docker:
       - image: ghcr.io/oracle/oci-cli:latest
-    environment:
-      OCI_CLI_FINGERPRINT: $OCI_CLI_FINGERPRINT
-      OCI_CLI_KEY_CONTENT: $OCI_CLI_KEY_CONTENT
-      OCI_CLI_REGION: $OCI_CLI_REGION
-      OCI_CLI_TENANCY: $OCI_CLI_TENANCY
-      OCI_CLI_USER: $OCI_CLI_USER
+    # environment:
+    #   OCI_CLI_FINGERPRINT: $OCI_CLI_FINGERPRINT
+    #   OCI_CLI_KEY_CONTENT: $OCI_CLI_KEY_CONTENT
+    #   OCI_CLI_REGION: $OCI_CLI_REGION
+    #   OCI_CLI_TENANCY: $OCI_CLI_TENANCY
+    #   OCI_CLI_USER: $OCI_CLI_USER
   base-executor:
     docker:
       - image: cimg/base:2025.02
