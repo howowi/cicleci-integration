@@ -18,37 +18,37 @@ executors:
       - image: cimg/base:2025.02
 
 jobs:
-  build:
-    executor: dotnet-executor
-    steps:
-      - checkout
-      - run:
-          name: Build the project
-          command: |
-            cd dotnetwebapp
-            dotnet publish --configuration Release
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
+  # build:
+  #   executor: dotnet-executor
+  #   steps:
+  #     - checkout
+  #     - run:
+  #         name: Build the project
+  #         command: |
+  #           cd dotnetwebapp
+  #           dotnet publish --configuration Release
+  #     - persist_to_workspace:
+  #         root: .
+  #         paths:
+  #           - .
 
-  build_docker:
-    executor: base-executor
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - run:
-          name: Build Docker image
-          command: |
-            docker build -t syd.ocir.io/apaccpt01/dotnet-webapp-repo:${CIRCLE_SHA1} .
-      - run:
-          name: Push Docker image
-          command: |
-            docker login -u "$OCIR_USER" -p "$OCIR_PASSWORD" syd.ocir.io
-            docker push syd.ocir.io/apaccpt01/dotnet-webapp-repo:${CIRCLE_SHA1}
+  # build_docker:
+  #   executor: base-executor
+  #   steps:
+  #     - checkout
+  #     - attach_workspace:
+  #         at: .
+  #     - setup_remote_docker:
+  #         docker_layer_caching: true
+  #     - run:
+  #         name: Build Docker image
+  #         command: |
+  #           docker build -t syd.ocir.io/apaccpt01/dotnet-webapp-repo:${CIRCLE_SHA1} .
+  #     - run:
+  #         name: Push Docker image
+  #         command: |
+  #           docker login -u "$OCIR_USER" -p "$OCIR_PASSWORD" syd.ocir.io
+  #           docker push syd.ocir.io/apaccpt01/dotnet-webapp-repo:${CIRCLE_SHA1}
 
   deploy:
     executor: oci-executor
@@ -57,15 +57,16 @@ jobs:
       - run:
           name: Check OCI CLI
           command: |
-            oci os ns get
+            oci -v os ns get
 
 workflows:
   build_and_deploy:
     jobs:
-      - build
-      - build_docker:
-          requires: 
-            - build
-      - deploy:
-          requires:
-            - build_docker
+      - deploy
+      # - build
+      # - build_docker:
+      #     requires: 
+      #       - build
+      # - deploy:
+      #     requires:
+      #       - build_docker
