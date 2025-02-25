@@ -9,34 +9,41 @@ steps:
   - stepType: Command
     name: stop current running container
     command: docker stop dotnet-webapp
+    runAs: opc
     timeoutInSeconds: 60
 
   - stepType: Command
     name: remove current running container
     command: docker rm dotnet-webapp
+    runAs: opc
     timeoutInSeconds: 60
 
   - stepType: Command
     name: login to OCI Container Registry
     command:  docker login syd.ocir.io -u apaccpt01/oracleidentitycloudservice/howie.owi@oracle.com -p "<zxG6}yd1ZP9:bqm48Fk"
+    runAs: opc
     timeoutInSeconds: 60
 
   - stepType: Command
     name: pull the latest image
-    command: syd.ocir.io/apaccpt01/dotnet-webapp-repo:${version}
+    command: docker pull syd.ocir.io/apaccpt01/dotnet-webapp-repo:${version}
+    runAs: opc
     timeoutInSeconds: 60
 
   - stepType: Command
     name: run the latest image
     command: docker run -dit -p 8080:80 --name dotnet-webapp syd.ocir.io/apaccpt01/dotnet-webapp-repo:${version}
+    runAs: opc
     timeoutInSeconds: 60
 
   - stepType: Command
     name: check the running container
     command: docker ps
+    runAs: opc
     timeoutInSeconds: 60
 
   - stepType: Command
     name: completed
     command: echo "deployment completed"
+    runAs: opc
     timeoutInSeconds: 60
