@@ -3,7 +3,7 @@ version: 2.1
 executors:
   dotnet-executor:
     docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:5.0
+      - image: mcr.microsoft.com/dotnet/sdk:5.0
   oci-executor:
     docker:
       - image: ghcr.io/oracle/oci-cli:latest
@@ -13,6 +13,9 @@ executors:
       OCI_CLI_REGION: $OCI_CLI_REGION
       OCI_CLI_TENANCY: $OCI_CLI_TENANCY
       OCI_CLI_USER: $OCI_CLI_USER
+  base-executor:
+    docker:
+      - image: cimg/base:2025.02
 
 jobs:
   build:
@@ -21,33 +24,46 @@ jobs:
       - checkout
       - run:
           name: Build the project
-          working_directory: dotnetwebapp/
-          command: dotnet publish --configuration Release --output ./publish
+          command: |
+            cd dotnetwebapp
+            dotnet publish --configuration Release
       - persist_to_workspace:
-          root: dotnetwebapp/publish
+          root: .
           paths:
             - .
-      # - run:
-      #     name: Run tests
-      #     working_directory: dotnetwebapp/
-      #     command: dotnet test --no-restore --verbosity normal
 
-  build_docker: 
+  build_docker:
+    executor: base-executor
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - run:
+          name: Build Docker image
+          command: |
+            docker build -t syd.ocir.io/apaccpt01/dotnet-webapp-repo:${CIRCLE_SHA1} .
+      - run:
+          name: Push Docker image
+          command: |
+            docker login -u "$OCIR_USER" -p "$OCIR_PASSWORD" syd.ocir.io
+            docker push syd.ocir.io/apaccpt01/dotnet-webapp-repo:${CIRCLE_SHA1}
 
   deploy:
-    executor: dotnet-executor
+    executor: oci-executor
     steps:
       - checkout
       - run:
-          name: Deploy to server
+          name: Check OCI CLI
           command: |
-            scp -r ./publish user@yourserver:/path/to/deploy
-            ssh user@yourserver 'sudo systemctl restart your-dotnet-app'
+            oci os ns get
 
 workflows:
   build_and_deploy:
     jobs:
       - build
+      - build_docker:
+          requires: 
+            - build
       - deploy:
           requires:
-            - build
+            - build_docker
