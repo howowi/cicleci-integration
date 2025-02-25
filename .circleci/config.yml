@@ -57,7 +57,7 @@ jobs:
       - run:
           name: Check OCI CLI
           command: |
-            oci -v os ns get
+            oci -d os ns get
 
 workflows:
   build_and_deploy:
