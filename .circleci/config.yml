@@ -57,6 +57,7 @@ jobs:
       - run:
           name: Check OCI CLI
           command: |
+            export OCI_CLI_KEY_CONTENT=$(echo "$OCI_CLI_KEY_CONTENT" | base64 -d)
             oci -d os ns get
 
 workflows:
