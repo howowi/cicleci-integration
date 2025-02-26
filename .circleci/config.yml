@@ -57,18 +57,7 @@ jobs:
       - run:
           name: Check OCI CLI
           command: |
-            touch ~/.oci/config
-            touch ~/.oci/oci_api_key.pem
-            echo "${OCI_CLI_KEY_CONTENT}" > ~/.oci/oci_api_key.pem
-            echo "[DEFAULT]" >> ~/.oci/config
-            echo "user=${OCI_CLI_USER}" >> ~/.oci/config
-            echo "fingerprint=${OCI_CLI_FINGERPRINT}" >> ~/.oci/config
-            echo "tenancy=${OCI_CLI_TENANCY}" >> ~/.oci/config
-            echo "region=${OCI_CLI_REGION}" >> ~/.oci/config
-            echo "key_file=~/.oci/oci_api_key.pem" >> ~/.oci/config
-            cat ~/.oci/config
-            cat ~/.oci/oci_api_key.pem
-            oci os ns get
+            -d os ns get
 
 workflows:
   build_and_deploy:
