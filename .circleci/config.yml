@@ -12,7 +12,7 @@ executors:
       - image: cimg/base:2025.02
 
 jobs:
-  build:
+  build_dotnet_app:
     executor: dotnet-executor
     steps:
       - checkout
@@ -57,10 +57,10 @@ jobs:
 workflows:
   build_and_deploy:
     jobs:
-      - build
+      - build_dotnet_app
       - build_docker:
           requires: 
-            - build
+            - build_dotnet_app
       - deploy:
           requires:
             - build_docker
