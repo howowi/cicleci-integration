@@ -7,12 +7,6 @@ executors:
   oci-executor:
     docker:
       - image: ghcr.io/oracle/oci-cli:latest
-    # environment:
-    #   OCI_CLI_FINGERPRINT: $OCI_CLI_FINGERPRINT
-    #   OCI_CLI_KEY_CONTENT: $OCI_CLI_KEY_CONTENT
-    #   OCI_CLI_REGION: $OCI_CLI_REGION
-    #   OCI_CLI_TENANCY: $OCI_CLI_TENANCY
-    #   OCI_CLI_USER: $OCI_CLI_USER
   base-executor:
     docker:
       - image: cimg/base:2025.02
@@ -57,8 +51,9 @@ jobs:
       - run:
           name: Check OCI CLI
           command: |
-            # export OCI_CLI_KEY_CONTENT=$(echo "$OCI_CLI_KEY_CONTENT" | base64 -d)
-            oci -d os ns get
+            export OCI_CLI_KEY_CONTENT=$(echo "$OCI_CLI_KEY_CONTENT" | base64 -d)
+            CIRCLE_SHA1_FIXED=4fa8331aa2ab697b9cd57803365855778c03c336
+            oci devops deployment create-pipeline-deployment --pipeline-id $OCI_DEVOPS_PIPELINE_ID --deployment-arguments "{\"items\":[{\"name\":\"BUILDRUN_HASH\",\"value\":\"${CIRCLE_SHA1_FIXED}\"}]}"
 
 workflows:
   build_and_deploy:
