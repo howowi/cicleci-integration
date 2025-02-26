@@ -17,7 +17,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Build the project
+          name: Build .NET Core app
           command: |
             cd dotnetwebapp
             dotnet publish --configuration Release
@@ -39,7 +39,7 @@ jobs:
           command: |
             docker build -t syd.ocir.io/apaccpt01/dotnet-webapp-repo:${CIRCLE_SHA1} .
       - run:
-          name: Push Docker image
+          name: Push Docker image to OCI Container Registry
           command: |
             docker login -u "$OCIR_USER" -p "$OCIR_PASSWORD" syd.ocir.io
             docker push syd.ocir.io/apaccpt01/dotnet-webapp-repo:${CIRCLE_SHA1}
@@ -49,11 +49,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Check OCI CLI
+          name: Deploy app to OCI using OCI DevOps
           command: |
             export OCI_CLI_KEY_CONTENT=$(echo "$OCI_CLI_KEY_CONTENT" | base64 -d)
-            CIRCLE_SHA1_FIXED=4fa8331aa2ab697b9cd57803365855778c03c336
-            oci devops deployment create-pipeline-deployment --pipeline-id $OCI_DEVOPS_PIPELINE_ID --deployment-arguments "{\"items\":[{\"name\":\"BUILDRUN_HASH\",\"value\":\"${CIRCLE_SHA1_FIXED}\"}]}"
+            oci devops deployment create-pipeline-deployment --pipeline-id $OCI_DEVOPS_PIPELINE_ID --deployment-arguments "{\"items\":[{\"name\":\"BUILDRUN_HASH\",\"value\":\"${CIRCLE_SHA1}\"}]}"
 
 workflows:
   build_and_deploy:
